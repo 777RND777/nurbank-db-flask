@@ -3,4 +3,4 @@ NurBank is a fictional bank for loans.\
 \
 Run `manage.py` to start API.\
 \
-Program has swagger documentation. Open DOMAIN:PORT/swagger-ui.
+API has swagger documentation. Run the project and open `DOMAIN:PORT/swagger-ui` in browser.
