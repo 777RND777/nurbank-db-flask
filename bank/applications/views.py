@@ -7,20 +7,6 @@ from bank.schemas import ApplicationSchema
 applications = Blueprint("applications", __name__)
 
 
-@applications.route("/applications", methods=["GET"])
-@marshal_with(ApplicationSchema(many=True))
-def get_application_list() -> list:
-    application_list = Application.get_list()
-    return application_list
-
-
-@applications.route("/applications/<int:application_id>", methods=["GET"])
-@marshal_with(ApplicationSchema)
-def get_application(application_id: int):
-    application = Application.get(application_id)
-    return application
-
-
 @applications.route("/applications", methods=["POST"])
 @marshal_with(ApplicationSchema)
 @use_kwargs(ApplicationSchema)
@@ -28,6 +14,18 @@ def create_application(**kwargs):
     application = Application(**kwargs)
     application.save()
     return application
+
+
+@applications.route("/applications", methods=["GET"])
+@marshal_with(ApplicationSchema(many=True))
+def get_application_list() -> list:
+    return Application.get_list()
+
+
+@applications.route("/applications/<int:application_id>", methods=["GET"])
+@marshal_with(ApplicationSchema)
+def get_application(application_id: int):
+    return Application.get(application_id)
 
 
 @applications.route("/applications/<int:application_id>", methods=["PUT"])

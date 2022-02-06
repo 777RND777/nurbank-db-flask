@@ -7,20 +7,6 @@ from bank.schemas import UserSchema
 users = Blueprint("users", __name__)
 
 
-@users.route("/users", methods=["GET"])
-@marshal_with(UserSchema(many=True))
-def get_user_list() -> list:
-    user_list = User.get_list()
-    return user_list
-
-
-@users.route("/users/<int:user_id>", methods=["GET"])
-@marshal_with(UserSchema)
-def get_user(user_id: int):
-    user = User.get(user_id)
-    return user
-
-
 @users.route("/users", methods=["POST"])
 @marshal_with(UserSchema)
 @use_kwargs(UserSchema(only=("id", "first_name", "last_name", "username")))
@@ -28,6 +14,18 @@ def create_user(**kwargs):
     user = User(**kwargs)
     user.save()
     return user
+
+
+@users.route("/users", methods=["GET"])
+@marshal_with(UserSchema(many=True))
+def get_user_list() -> list:
+    return User.get_list()
+
+
+@users.route("/users/<int:user_id>", methods=["GET"])
+@marshal_with(UserSchema)
+def get_user(user_id: int):
+    return User.get(user_id)
 
 
 @users.route("/users/<int:user_id>", methods=["PUT"])
