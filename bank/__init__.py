@@ -17,8 +17,6 @@ app.config.update({
 
 docs = FlaskApiSpec()
 
-client = app.test_client()
-
 engine = create_engine("sqlite:///bank/db.sqlite")
 session = scoped_session(sessionmaker(autocommit=False,
                                       autoflush=False,
@@ -26,11 +24,9 @@ session = scoped_session(sessionmaker(autocommit=False,
 
 Base = declarative_base()
 Base.query = session.query_property()
-# importing here because of circular import error
-
+from .models import *
 Base.metadata.create_all(bind=engine)
 
-# place for future
 
 # importing here because of circular import error
 from .applications.views import applications
