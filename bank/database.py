@@ -10,5 +10,8 @@ session = scoped_session(sessionmaker(autocommit=False,
 
 Base = declarative_base()
 Base.query = session.query_property()
-from .models import *
-Base.metadata.create_all(bind=engine)
+
+
+def init_db():
+    import bank.models
+    Base.metadata.create_all(bind=engine)

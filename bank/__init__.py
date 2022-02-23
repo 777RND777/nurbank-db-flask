@@ -13,6 +13,7 @@ app.config.update({
     "APISPEC_SWAGGER_URL": "/swagger/"
 })
 
+init_db()
 docs = FlaskApiSpec()
 
 # importing here because of circular import error
