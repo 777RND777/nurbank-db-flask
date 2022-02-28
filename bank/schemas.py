@@ -14,13 +14,20 @@ class ApplicationSchema(Schema):
     user_id = Integer()
 
 
-class UserSchema(Schema):
-    pk = Integer(dump_only=True)
+class UserSchemaBase(Schema):
     id = Integer()
     first_name = String(validate=[validate.Length(max=250)])
     last_name = String(validate=[validate.Length(max=250)])
     username = String(validate=[validate.Length(max=250)])
     nickname = String(validate=[validate.Length(max=250)])
+
+
+class UserSchemaCreate(UserSchemaBase):
+    pass
+
+
+class UserSchema(UserSchemaBase):
+    pk = Integer(dump_only=True)
     debt = Integer()
 
     applications = Nested(ApplicationSchema, many=True, dump_only=True)

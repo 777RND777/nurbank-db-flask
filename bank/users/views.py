@@ -2,14 +2,14 @@ from flask import Blueprint
 from flask_apispec import marshal_with, use_kwargs
 from bank import docs
 from bank.models import User
-from bank.schemas import UserSchema
+from bank.schemas import UserSchema, UserSchemaCreate
 
 users = Blueprint("users", __name__)
 
 
 @users.route("/users", methods=["POST"])
 @marshal_with(UserSchema)
-@use_kwargs(UserSchema(only=("id", "first_name", "last_name", "username")))
+@use_kwargs(UserSchemaCreate)
 def create_user(**kwargs):
     user = User(**kwargs)
     user.save()
