@@ -5,13 +5,12 @@ from marshmallow.fields import Boolean, Integer, Nested, String
 class ApplicationSchema(Schema):
     pk = Integer(dump_only=True)
     id = Integer()
+    user_id = Integer()
     value = Integer()
     request_date = String(validate=[validate.Length(max=50)])
     answer_date = String(validate=[validate.Length(max=50)])
     approved = Boolean()
     is_admin = Boolean()
-
-    user_id = Integer()
 
 
 class UserSchemaBase(Schema):
