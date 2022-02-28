@@ -1,5 +1,6 @@
 from flask import Blueprint
 from flask_apispec import marshal_with, use_kwargs
+
 from bank import docs
 from bank.models import User
 from bank.schemas import UserSchema, UserSchemaCreate

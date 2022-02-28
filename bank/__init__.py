@@ -2,6 +2,7 @@ from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from flask import Flask
 from flask_apispec.extension import FlaskApiSpec
+
 from .database import *
 
 app = Flask(__name__)
