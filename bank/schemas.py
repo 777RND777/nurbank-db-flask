@@ -18,7 +18,6 @@ class UserSchemaBase(Schema):
     first_name = String(validate=[validate.Length(max=250)])
     last_name = String(validate=[validate.Length(max=250)])
     username = String(validate=[validate.Length(max=250)])
-    nickname = String(validate=[validate.Length(max=250)])
 
 
 class UserSchemaCreate(UserSchemaBase):
@@ -27,6 +26,7 @@ class UserSchemaCreate(UserSchemaBase):
 
 class UserSchema(UserSchemaBase):
     pk = Integer(dump_only=True)
+    nickname = String(validate=[validate.Length(max=250)])
     debt = Integer()
 
     applications = Nested(ApplicationSchema, many=True, dump_only=True)
