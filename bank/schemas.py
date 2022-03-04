@@ -2,6 +2,16 @@ from marshmallow import Schema, validate
 from marshmallow.fields import Boolean, Integer, Nested, String
 
 
+class ApplicationSchemaCreate(Schema):
+    id = Integer(required=True)
+    user_id = Integer(required=True)
+    value = Integer(required=True)
+    request_date = String(required=True, validate=[validate.Length(max=50)])
+    answer_date = String(required=True, validate=[validate.Length(max=50)])
+    approved = Boolean()
+    is_admin = Boolean()
+
+
 class ApplicationSchema(Schema):
     pk = Integer(dump_only=True)
     id = Integer()

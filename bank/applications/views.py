@@ -3,14 +3,14 @@ from flask_apispec import marshal_with, use_kwargs
 
 from bank import docs
 from bank.models import Application
-from bank.schemas import ApplicationSchema
+from bank.schemas import ApplicationSchema, ApplicationSchemaCreate
 
 applications = Blueprint("applications", __name__)
 
 
 @applications.route("/applications", methods=["POST"])
+@use_kwargs(ApplicationSchemaCreate)
 @marshal_with(ApplicationSchema)
-@use_kwargs(ApplicationSchema)
 def create_application(**kwargs):
     application = Application(**kwargs)
     application.save()
