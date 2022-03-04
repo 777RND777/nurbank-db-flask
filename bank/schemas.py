@@ -13,19 +13,19 @@ class ApplicationSchema(Schema):
     is_admin = Boolean()
 
 
-class UserSchemaBase(Schema):
+class UserSchemaCreate(Schema):
+    id = Integer(required=True)
+    first_name = String(required=True, validate=[validate.Length(max=250)])
+    last_name = String(required=True, validate=[validate.Length(max=250)])
+    username = String(required=True, validate=[validate.Length(max=250)])
+
+
+class UserSchema(Schema):
+    pk = Integer(dump_only=True)
     id = Integer()
     first_name = String(validate=[validate.Length(max=250)])
     last_name = String(validate=[validate.Length(max=250)])
     username = String(validate=[validate.Length(max=250)])
-
-
-class UserSchemaCreate(UserSchemaBase):
-    pass
-
-
-class UserSchema(UserSchemaBase):
-    pk = Integer(dump_only=True)
     nickname = String(validate=[validate.Length(max=250)])
     debt = Integer()
 

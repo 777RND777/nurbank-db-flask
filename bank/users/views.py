@@ -9,8 +9,8 @@ users = Blueprint("users", __name__)
 
 
 @users.route("/users", methods=["POST"])
-@marshal_with(UserSchema)
 @use_kwargs(UserSchemaCreate)
+@marshal_with(UserSchema)
 def create_user(**kwargs):
     user = User(**kwargs)
     user.save()
@@ -30,8 +30,8 @@ def get_user(user_id: int):
 
 
 @users.route("/users/<int:user_id>", methods=["PUT"])
-@marshal_with(UserSchema)
 @use_kwargs(UserSchema)
+@marshal_with(UserSchema)
 def update_user(user_id: int, **kwargs):
     user = User.get(user_id)
     user.update(**kwargs)
@@ -43,7 +43,7 @@ def update_user(user_id: int, **kwargs):
 def remove_user(user_id: int) -> (str, int):
     user = User.get(user_id)
     user.delete()
-    return "", 204
+    return user
 
 
 docs.register(get_user_list, blueprint="users")
