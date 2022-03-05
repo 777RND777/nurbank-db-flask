@@ -7,9 +7,7 @@ class ApplicationSchemaCreate(Schema):
     user_id = Integer(required=True)
     value = Integer(required=True)
     request_date = String(required=True, validate=[validate.Length(max=50)])
-    answer_date = String(required=True, validate=[validate.Length(max=50)])
-    approved = Boolean()
-    is_admin = Boolean()
+    is_admin = Boolean(required=True)
 
 
 class ApplicationSchema(Schema):

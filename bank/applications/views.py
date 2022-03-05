@@ -13,6 +13,9 @@ applications = Blueprint("applications", __name__)
 @marshal_with(ApplicationSchema)
 def create_application(**kwargs):
     application = Application(**kwargs)
+    if kwargs['is_admin']:
+        application.approved = True
+        application.answer_date = kwargs['request_date']
     application.save()
     return application
 
