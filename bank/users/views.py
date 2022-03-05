@@ -41,7 +41,7 @@ def update_user(user_id: int, **kwargs):
 
 @users.route("/users/<int:user_id>", methods=["DELETE"])
 @marshal_with(UserSchema)
-def remove_user(user_id: int) -> (str, int):
+def remove_user(user_id: int):
     user = User.get(user_id)
     user.delete()
     return user

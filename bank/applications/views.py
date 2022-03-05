@@ -22,7 +22,7 @@ def create_application(**kwargs):
 
 @applications.route("/applications", methods=["GET"])
 @marshal_with(ApplicationSchema(many=True))
-def get_application_list() -> list:
+def get_application_list():
     return Application.get_list()
 
 
@@ -43,10 +43,10 @@ def update_application(application_id: int, **kwargs):
 
 @applications.route("/applications/<int:application_id>", methods=["DELETE"])
 @marshal_with(ApplicationSchema)
-def remove_application(application_id: int) -> (str, int):
+def remove_application(application_id: int):
     application = Application.get(application_id)
     application.delete()
-    return "", 204
+    return application
 
 
 docs.register(get_application_list, blueprint="applications")
