@@ -35,6 +35,8 @@ def get_user(user_id: int):
 @marshal_with(UserSchema)
 def update_user(user_id: int, **kwargs):
     user = User.get(user_id)
+    if not user:
+        return None
     user.update(**kwargs)
     return user
 
@@ -43,6 +45,8 @@ def update_user(user_id: int, **kwargs):
 @marshal_with(UserSchema)
 def remove_user(user_id: int):
     user = User.get(user_id)
+    if not user:
+        return None
     user.delete()
     return user
 
