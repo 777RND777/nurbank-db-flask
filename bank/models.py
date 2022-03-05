@@ -19,48 +19,28 @@ class User(Base):
 
     @classmethod
     def get_list(cls):
-        try:
-            users = cls.query.all()
-            session.commit()
-            return users
-        except Exception:
-            session.rollback()
-            raise
+        users = cls.query.all()
+        session.commit()
+        return users
 
     @classmethod
     def get(cls, user_id: int):
-        try:
-            user = cls.query.filter(cls.id == user_id).first()
-            session.commit()
-            return user
-        except Exception:
-            session.rollback()
-            raise
+        user = cls.query.filter(cls.id == user_id).first()
+        session.commit()
+        return user
 
     def save(self):
-        try:
-            session.add(self)
-            session.commit()
-        except Exception:
-            session.rollback()
-            raise
+        session.add(self)
+        session.commit()
 
     def update(self, **kwargs):
-        try:
-            for key, value in kwargs.items():
-                setattr(self, key, value)
-            session.commit()
-        except Exception:
-            session.rollback()
-            raise
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        session.commit()
 
     def delete(self):
-        try:
-            session.delete(self)
-            session.commit()
-        except Exception:
-            session.rollback()
-            raise
+        session.delete(self)
+        session.commit()
 
 
 class Application(Base):
@@ -79,55 +59,31 @@ class Application(Base):
 
     @classmethod
     def get_list(cls):
-        try:
-            applications = cls.query.all()
-            session.commit()
-            return applications
-        except Exception:
-            session.rollback()
-            raise
+        applications = cls.query.all()
+        session.commit()
+        return applications
 
     @classmethod
     def get_user_list(cls, user_id: int):
-        try:
-            applications = cls.query.filter(cls.user_id == user_id).all()
-            session.commit()
-            return applications
-        except Exception:
-            session.rollback()
-            raise
+        applications = cls.query.filter(cls.user_id == user_id).all()
+        session.commit()
+        return applications
 
     @classmethod
     def get(cls, application_id: int):
-        try:
-            user = cls.query.filter(cls.id == application_id).first()
-            session.commit()
-            return user
-        except Exception:
-            session.rollback()
-            raise
+        user = cls.query.filter(cls.id == application_id).first()
+        session.commit()
+        return user
 
     def save(self):
-        try:
-            session.add(self)
-            session.commit()
-        except Exception:
-            session.rollback()
-            raise
+        session.add(self)
+        session.commit()
 
     def update(self, **kwargs):
-        try:
-            for key, value in kwargs.items():
-                setattr(self, key, value)
-            session.commit()
-        except Exception:
-            session.rollback()
-            raise
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        session.commit()
 
     def delete(self):
-        try:
-            session.delete(self)
-            session.commit()
-        except Exception:
-            session.rollback()
-            raise
+        session.delete(self)
+        session.commit()
