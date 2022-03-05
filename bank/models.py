@@ -17,13 +17,6 @@ class User(Base):
 
     applications = relationship("Application", back_populates="user", lazy=True)
 
-    def __init__(self, id: int, first_name: str, last_name: str, username: str):
-        self.id = id
-        self.first_name = first_name
-        self.last_name = last_name
-        self.username = f"@{username}"
-        self.nickname = username
-
     @classmethod
     def get_list(cls):
         try:

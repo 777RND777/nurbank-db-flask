@@ -13,6 +13,7 @@ users = Blueprint("users", __name__)
 @marshal_with(UserSchema)
 def create_user(**kwargs):
     user = User(**kwargs)
+    user.nickname = kwargs['username']
     user.save()
     return user
 
