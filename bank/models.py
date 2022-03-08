@@ -71,9 +71,9 @@ class Application(Base):
 
     @classmethod
     def get(cls, application_id: int):
-        user = cls.query.filter(cls.id == application_id).first()
+        application = cls.query.filter(cls.id == application_id).first()
         session.commit()
-        return user
+        return application
 
     def save(self):
         session.add(self)
