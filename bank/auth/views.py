@@ -1,5 +1,6 @@
 from flask import Blueprint
 from flask_apispec import marshal_with, use_kwargs
+from bcrypt import checkpw
 
 from bank import docs
 from bank.models import User
@@ -14,5 +15,8 @@ def register():
 
 
 @auth.route("/login", methods=["POST"])
-def login():
-    pass
+def login(**kwargs):
+    user = User.query.filter(User.username == kwargs['username']).scalar()
+    if checkpw(user.password, kwargs['password']):
+        return user
+    return None
