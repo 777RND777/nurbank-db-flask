@@ -4,7 +4,6 @@ from flask_apispec import marshal_with, use_kwargs
 from bank import docs
 from bank.models import User
 from bank.schemas import UserSchema, UserSchemaCreate
-from .helpers import get_password_hash
 
 users = Blueprint("users", __name__)
 
@@ -14,7 +13,7 @@ users = Blueprint("users", __name__)
 @marshal_with(UserSchema)
 def create_user(**kwargs):
     kwargs['nickname'] = kwargs['username']
-    kwargs['password_hash'] = get_password_hash(kwargs['id'])
+    kwargs['password_hash'] = kwargs.pop('password')
 
     user = User(**kwargs)
     user.save()

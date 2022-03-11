@@ -26,12 +26,13 @@ class UserSchemaCreate(Schema):
     first_name = String(required=True, validate=[validate.Length(max=250)])
     last_name = String(required=True, validate=[validate.Length(max=250)])
     username = String(required=True, validate=[validate.Length(max=250)])
+    password = String(required=True, validate=[validate.Length(max=250)])
 
 
 class UserSchema(Schema):
     pk = Integer(dump_only=True)
-    id = Integer()
-    password_hash = String(validate=[validate.Length(max=250)])
+    id = Integer(required=True)
+    password = String(required=True, validate=[validate.Length(max=250)])
     first_name = String(validate=[validate.Length(max=250)])
     last_name = String(validate=[validate.Length(max=250)])
     username = String(validate=[validate.Length(max=250)])
