@@ -17,6 +17,8 @@ def register():
 @auth.route("/login", methods=["POST"])
 def login(**kwargs):
     user = User.query.filter(User.username == kwargs['username']).scalar()
+    if not user:
+        return None
     if checkpw(user.password, kwargs['password']):
         return user
     return None

@@ -2,10 +2,20 @@ from flask import Blueprint
 from flask_apispec import marshal_with, use_kwargs
 
 from bank import docs
-from bank.models import Application
+from bank.models import Application, User
 from bank.schemas import ApplicationSchema, ApplicationSchemaCreate
 
 applications = Blueprint("applications", __name__)
+
+
+def check_user(func):
+    def inner(**kwargs):
+        user = User.get(kwargs['user_id'])
+        if not user or user.password_hash != kwargs['password']:
+            return
+        kwargs.pop('password')
+        func(**kwargs)
+    return inner
 
 
 @applications.route("/applications", methods=["POST"])

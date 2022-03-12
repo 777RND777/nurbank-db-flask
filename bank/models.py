@@ -12,9 +12,9 @@ class User(Base):
     password_hash = Column(String(250), nullable=False)
     first_name = Column(String(250), nullable=False)
     last_name = Column(String(250), nullable=False)
-    username = Column(String(250))
-    nickname = Column(String(250))
-    debt = Column(Integer, default=0)
+    username = Column(String(250), nullable=False)
+    nickname = Column(String(250), nullable=False)
+    debt = Column(Integer, nullable=False, default=0)
 
     applications = relationship("Application", back_populates="user", lazy=True)
 
@@ -51,9 +51,9 @@ class Application(Base):
     id = Column(Integer, unique=True, nullable=False)
     value = Column(Integer, nullable=False)
     request_date = Column(String(50), nullable=False)
-    answer_date = Column(String(50))
-    approved = Column(Boolean, default=False)
-    is_admin = Column(Boolean)
+    answer_date = Column(String(50), nullable=False, default='')
+    approved = Column(Boolean, nullable=False, default=False)
+    is_admin = Column(Boolean, nullable=False, default=False)
 
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     user = relationship("User", back_populates="applications", lazy=True)
