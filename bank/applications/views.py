@@ -2,24 +2,16 @@ from flask import Blueprint
 from flask_apispec import marshal_with, use_kwargs
 
 from bank import docs
-from bank.models import Application, User
+from bank.models import Application
 from bank.schemas import ApplicationSchema, ApplicationSchemaCreate
+from .auth import check_user
 
 applications = Blueprint("applications", __name__)
 
 
-def check_user(func):
-    def inner(**kwargs):
-        user = User.get(kwargs['user_id'])
-        if not user or user.password_hash != kwargs['password']:
-            return
-        kwargs.pop('password')
-        func(**kwargs)
-    return inner
-
-
 @applications.route("/applications", methods=["POST"])
 @use_kwargs(ApplicationSchemaCreate)
+@check_user
 @marshal_with(ApplicationSchema)
 def create_application(**kwargs):
     if kwargs['is_admin']:
@@ -32,20 +24,23 @@ def create_application(**kwargs):
 
 
 @applications.route("/applications", methods=["GET"])
+@check_user
 @marshal_with(ApplicationSchema(many=True))
 def get_application_list():
     return Application.get_list()
 
 
 @applications.route("/applications/<int:application_id>", methods=["GET"])
+@check_user
 @marshal_with(ApplicationSchema)
 def get_application(application_id: int):
     return Application.get(application_id)
 
 
 @applications.route("/applications/<int:application_id>", methods=["PUT"])
-@marshal_with(ApplicationSchema)
+@check_user
 @use_kwargs(ApplicationSchema)
+@marshal_with(ApplicationSchema)
 def update_application(application_id: int, **kwargs):
     application = Application.get(application_id)
     application.update(**kwargs)
@@ -53,6 +48,7 @@ def update_application(application_id: int, **kwargs):
 
 
 @applications.route("/applications/<int:application_id>", methods=["DELETE"])
+@check_user
 @marshal_with(ApplicationSchema)
 def remove_application(application_id: int):
     application = Application.get(application_id)
