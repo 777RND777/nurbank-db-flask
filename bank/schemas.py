@@ -1,9 +1,9 @@
 from marshmallow import Schema, validate
-from marshmallow.fields import Boolean, Integer, Nested, String
+from marshmallow.fields import Boolean, Integer, String
 
 
 class ApplicationSchemaBase(Schema):
-    id = Integer(required=True)
+    id = Integer()
     user_id = Integer(required=True)
     user_password = String(required=True, validate=[validate.Length(max=250)])
 
@@ -41,5 +41,3 @@ class UserSchema(UserSchemaBase):
     username = String(validate=[validate.Length(max=250)])
     nickname = String(validate=[validate.Length(max=250)])
     debt = Integer()
-
-    applications = Nested(ApplicationSchema, many=True, dump_only=True)

@@ -59,12 +59,6 @@ class Application(Base):
     user = relationship("User", back_populates="applications", lazy=True)
 
     @classmethod
-    def get_list(cls):
-        applications = cls.query.all()
-        session.commit()
-        return applications
-
-    @classmethod
     def get_user_list(cls, user_id: int):
         applications = cls.query.filter(cls.user_id == user_id).all()
         session.commit()

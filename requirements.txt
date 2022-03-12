@@ -17,6 +17,7 @@ pycodestyle==2.8.0
 pycparser==2.21
 pyflakes==2.4.0
 pyparsing==3.0.7
+python-dotenv==0.19.2
 six==1.16.0
 SQLAlchemy==1.4.32
 webargs==8.1.0

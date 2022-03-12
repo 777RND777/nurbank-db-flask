@@ -2,8 +2,9 @@ from flask import Blueprint
 from flask_apispec import marshal_with, use_kwargs
 
 from bank import docs
-from bank.models import User
-from bank.schemas import UserSchema, UserSchemaCreate
+from bank.auth import check_user
+from bank.models import Application, User
+from bank.schemas import ApplicationSchema, UserSchema, UserSchemaCreate
 
 users = Blueprint("users", __name__)
 
@@ -24,6 +25,13 @@ def create_user(**kwargs):
 @marshal_with(UserSchema(many=True))
 def get_user_list() -> list:
     return User.get_list()
+
+
+@users.route("/users/<int:user_id>/applications", methods=["GET"])
+@check_user
+@marshal_with(ApplicationSchema(many=True))
+def get_user_applications(user_id: int):
+    return Application.get_user_list(user_id)
 
 
 @users.route("/users/<int:user_id>", methods=["GET"])
@@ -55,6 +63,7 @@ def remove_user(user_id: int):
 
 docs.register(get_user_list, blueprint="users")
 docs.register(get_user, blueprint="users")
+docs.register(get_user_applications, blueprint="users")
 docs.register(create_user, blueprint="users")
 docs.register(update_user, blueprint="users")
 docs.register(remove_user, blueprint="users")
