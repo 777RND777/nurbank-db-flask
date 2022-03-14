@@ -27,16 +27,25 @@ def get_user_list() -> list:
     return User.get_list()
 
 
+@users.route("/users/<int:user_id>", methods=["GET"])
+@marshal_with(UserSchema)
+def get_user(user_id: int):
+    return User.get(user_id)
+
+
 @users.route("/users/<int:user_id>/applications", methods=["GET"])
 @marshal_with(ApplicationSchema(many=True))
 def get_user_applications(user_id: int):
     return Application.get_user_list(user_id)
 
 
-@users.route("/users/<int:user_id>", methods=["GET"])
-@marshal_with(UserSchema)
-def get_user(user_id: int):
-    return User.get(user_id)
+@users.route("/users/<int:user_id>/pending", methods=["GET"])
+@marshal_with(ApplicationSchema)
+def get_user_pending(user_id: int):
+    applications = Application.get_user_list(user_id)
+    if not applications or applications[-1].answer_date:
+        return None
+    return applications[-1]
 
 
 @users.route("/users/<int:user_id>", methods=["PUT"])
@@ -54,5 +63,6 @@ def update_user(user_id: int, **kwargs):
 docs.register(get_user_list, blueprint="users")
 docs.register(get_user, blueprint="users")
 docs.register(get_user_applications, blueprint="users")
+docs.register(get_user_pending, blueprint="users")
 docs.register(create_user, blueprint="users")
 docs.register(update_user, blueprint="users")
