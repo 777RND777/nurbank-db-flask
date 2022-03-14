@@ -49,13 +49,13 @@ class Application(Base):
 
     pk = Column(Integer, primary_key=True)
     id = Column(Integer, unique=True, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     value = Column(Integer, nullable=False)
     request_date = Column(String(50), nullable=False)
     answer_date = Column(String(50), nullable=False, default='')
     approved = Column(Boolean, nullable=False, default=False)
     is_admin = Column(Boolean, nullable=False, default=False)
 
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     user = relationship("User", back_populates="applications", lazy=True)
 
     @classmethod
