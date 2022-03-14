@@ -28,7 +28,6 @@ def get_user_list() -> list:
 
 
 @users.route("/users/<int:user_id>/applications", methods=["GET"])
-@check_user
 @marshal_with(ApplicationSchema(many=True))
 def get_user_applications(user_id: int):
     return Application.get_user_list(user_id)
@@ -42,6 +41,7 @@ def get_user(user_id: int):
 
 @users.route("/users/<int:user_id>", methods=["PUT"])
 @use_kwargs(UserSchema)
+@check_user
 @marshal_with(UserSchema)
 def update_user(user_id: int, **kwargs):
     user = User.get(user_id)
@@ -51,19 +51,8 @@ def update_user(user_id: int, **kwargs):
     return user
 
 
-@users.route("/users/<int:user_id>", methods=["DELETE"])
-@marshal_with(UserSchema)
-def remove_user(user_id: int):
-    user = User.get(user_id)
-    if not user:
-        return None
-    user.delete()
-    return user
-
-
 docs.register(get_user_list, blueprint="users")
 docs.register(get_user, blueprint="users")
 docs.register(get_user_applications, blueprint="users")
 docs.register(create_user, blueprint="users")
 docs.register(update_user, blueprint="users")
-docs.register(remove_user, blueprint="users")

@@ -39,15 +39,6 @@ def update_application(application_id: int, **kwargs):
     return application
 
 
-@applications.route("/applications/<int:application_id>", methods=["DELETE"])
-@marshal_with(ApplicationSchema)
-def remove_application(application_id: int):
-    application = Application.get(application_id)
-    application.delete()
-    return application
-
-
 docs.register(create_application, blueprint="applications")
 docs.register(get_application, blueprint="applications")
 docs.register(update_application, blueprint="applications")
-docs.register(remove_application, blueprint="applications")
