@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, BINARY, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from .database import Base, session
@@ -9,7 +9,7 @@ class User(Base):
 
     pk = Column(Integer, primary_key=True)
     id = Column(Integer, unique=True, nullable=False)
-    password_hash = Column(String(250), nullable=False)
+    password_hash = Column(BINARY(250), nullable=False)
     first_name = Column(String(250), nullable=False)
     last_name = Column(String(250), nullable=False)
     username = Column(String(250), nullable=False)
