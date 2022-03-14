@@ -5,7 +5,7 @@ from marshmallow.fields import Boolean, Integer, String
 class ApplicationSchemaBase(Schema):
     id = Integer()
     user_id = Integer(required=True)
-    user_password = String(required=True, validate=[validate.Length(max=250)])
+    password = String(required=True, validate=[validate.Length(max=250)])
 
 
 class ApplicationSchemaCreate(ApplicationSchemaBase):
@@ -24,7 +24,7 @@ class ApplicationSchema(ApplicationSchemaBase):
 
 
 class UserSchemaBase(Schema):
-    id = Integer(required=True)
+    id = Integer()
     password = String(required=True, validate=[validate.Length(max=250)])
 
 

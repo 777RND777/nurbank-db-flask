@@ -11,16 +11,15 @@ def hash_password(password: str) -> bytes:
 
 def check_user(func):
     def wrapper(**kwargs):
-        user_key = 'user_id' if 'user_id' in kwargs.keys() else 'id'
-        user = User.get(kwargs[user_key])
+        user = User.get(kwargs['user_id'])
         if not user:
             return
 
-        user_password = kwargs['user_password'].encode('utf-8')
-        if hashpw(user_password, user.password_hash) != user.password_hash:
+        password = kwargs['password'].encode('utf-8')
+        if hashpw(password, user.password_hash) != user.password_hash:
             return
 
-        kwargs.pop('user_password')
+        kwargs.pop('password')
         return func(**kwargs)
 
     wrapper.__name__ = func.__name__
