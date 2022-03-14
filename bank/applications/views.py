@@ -3,8 +3,8 @@ from flask_apispec import marshal_with, use_kwargs
 
 from bank import docs
 from bank.auth import check_user
-from bank.models import Application
-from bank.schemas import ApplicationSchema, ApplicationSchemaCreate
+from bank.models import Application, User
+from bank.schemas import ApplicationSchema, ApplicationSchemaApprove, ApplicationSchemaCreate
 
 applications = Blueprint("applications", __name__)
 
@@ -14,10 +14,6 @@ applications = Blueprint("applications", __name__)
 @check_user
 @marshal_with(ApplicationSchema)
 def create_application(**kwargs):
-    if kwargs['is_admin']:
-        kwargs['approved'] = True
-        kwargs['answer_date'] = kwargs['request_date']
-
     application = Application(**kwargs)
     application.save()
     return application
@@ -39,6 +35,24 @@ def update_application(application_id: int, **kwargs):
     return application
 
 
+@applications.route("/applications/<int:application_id>/approve", methods=["PUT"])
+@use_kwargs(ApplicationSchemaApprove)
+@check_user
+@marshal_with(ApplicationSchema)
+def approve_application(application_id: int, **kwargs):
+    application = Application.get(application_id)
+    if application.answer_date:
+        return application
+    application.update(**kwargs)
+
+    if application.approved:
+        user = User.get(application.user_id)
+        user.debt += application.value
+        user.save()
+    return application
+
+
 docs.register(create_application, blueprint="applications")
 docs.register(get_application, blueprint="applications")
 docs.register(update_application, blueprint="applications")
+docs.register(approve_application, blueprint="applications")
