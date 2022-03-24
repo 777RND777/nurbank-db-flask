@@ -27,29 +27,18 @@ def get_application(application_id: int):
     return Application.get(application_id)
 
 
-@applications.route("/applications/<int:application_id>", methods=["PUT"])
-@use_kwargs(ApplicationSchema)
-@check_user
-@marshal_with(ApplicationSchema)
-def update_application(application_id: int, **kwargs):
-    application = Application.get(application_id)
-    application.update(**kwargs)
-    return application
-
-
 @applications.route("/applications/<int:application_id>/approve", methods=["PUT"])
 @use_kwargs(ApplicationSchemaBase)
 @check_user
 @marshal_with(ApplicationSchema)
-def approve_application(application_id: int):
+def approve_application(application_id: int, **_):
     application = Application.get(application_id)
     if application.answer_date:
         return application
 
-    application.update({
-        "answer_date": get_current_time(),
-        "approved": True
-    })
+    application.answer_date = get_current_time()
+    application.approved = True
+    application.save()
 
     user = User.get(application.user_id)
     user.debt += application.value
@@ -62,16 +51,17 @@ def approve_application(application_id: int):
 @use_kwargs(ApplicationSchemaBase)
 @check_user
 @marshal_with(ApplicationSchema)
-def decline_application(application_id: int):
+def decline_application(application_id: int, **_):
     application = Application.get(application_id)
     if application.answer_date:
         return application
 
-    application.update({"answer_date": get_current_time()})
+    application.answer_date = get_current_time()
+    application.save()
     return application
 
 
 docs.register(create_application, blueprint="applications")
 docs.register(get_application, blueprint="applications")
-docs.register(update_application, blueprint="applications")
 docs.register(approve_application, blueprint="applications")
+docs.register(decline_application, blueprint="applications")
