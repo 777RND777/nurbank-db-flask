@@ -4,7 +4,8 @@ from flask_apispec import marshal_with, use_kwargs
 from bank import docs
 from bank.auth import check_user
 from bank.models import Application, User
-from bank.schemas import ApplicationSchema, ApplicationSchemaApprove, ApplicationSchemaCreate
+from bank.schemas import ApplicationSchema, ApplicationSchemaBase, ApplicationSchemaCreate
+from .helpers import get_current_time
 
 applications = Blueprint("applications", __name__)
 
@@ -14,6 +15,7 @@ applications = Blueprint("applications", __name__)
 @check_user
 @marshal_with(ApplicationSchema)
 def create_application(**kwargs):
+    kwargs['request_date'] = get_current_time()
     application = Application(**kwargs)
     application.save()
     return application
@@ -36,19 +38,36 @@ def update_application(application_id: int, **kwargs):
 
 
 @applications.route("/applications/<int:application_id>/approve", methods=["PUT"])
-@use_kwargs(ApplicationSchemaApprove)
+@use_kwargs(ApplicationSchemaBase)
 @check_user
 @marshal_with(ApplicationSchema)
-def approve_application(application_id: int, **kwargs):
+def approve_application(application_id: int):
     application = Application.get(application_id)
     if application.answer_date:
         return application
-    application.update(**kwargs)
 
-    if application.approved:
-        user = User.get(application.user_id)
-        user.debt += application.value
-        user.save()
+    application.update({
+        "answer_date": get_current_time(),
+        "approved": True
+    })
+
+    user = User.get(application.user_id)
+    user.debt += application.value
+    user.save()
+
+    return application
+
+
+@applications.route("/applications/<int:application_id>/decline", methods=["PUT"])
+@use_kwargs(ApplicationSchemaBase)
+@check_user
+@marshal_with(ApplicationSchema)
+def decline_application(application_id: int):
+    application = Application.get(application_id)
+    if application.answer_date:
+        return application
+
+    application.update({"answer_date": get_current_time()})
     return application
 
 

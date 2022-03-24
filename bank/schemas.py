@@ -10,13 +10,7 @@ class ApplicationSchemaBase(Schema):
 
 class ApplicationSchemaCreate(ApplicationSchemaBase):
     value = Integer(required=True)
-    request_date = String(required=True, validate=[validate.Length(max=50)])
-    is_admin = Boolean()
-
-
-class ApplicationSchemaApprove(ApplicationSchemaBase):
-    answer_date = String(required=True, validate=[validate.Length(max=50)])
-    approved = Boolean(required=True)
+    is_admin = Boolean(default=False)
 
 
 class ApplicationSchema(ApplicationSchemaBase):
