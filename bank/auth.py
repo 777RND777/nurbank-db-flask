@@ -12,10 +12,12 @@ def hash_password(password: str) -> bytes:
 def check_user(func):
     def wrapper(**kwargs):
         user = User.get(kwargs['user_id'])
+        # TODO messages
         if not user:
             return
 
         password = kwargs['password'].encode('utf-8')
+        # TODO messages
         if hashpw(password, user.password_hash) != user.password_hash:
             return
 

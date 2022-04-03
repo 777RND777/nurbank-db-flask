@@ -43,8 +43,12 @@ def get_user_applications(user_id: int):
 @marshal_with(ApplicationSchema)
 def get_user_pending(user_id: int):
     applications = Application.get_user_list(user_id)
-    if not applications or applications[-1].answer_date:
+    # TODO messages
+    if len(applications) == 0:
         return None
+    if applications[-1].answer_date:
+        return None
+
     return applications[-1]
 
 
@@ -54,8 +58,10 @@ def get_user_pending(user_id: int):
 @marshal_with(UserSchema)
 def update_user(user_id: int, **kwargs):
     user = User.get(user_id)
+    # TODO messages
     if not user:
         return None
+
     user.update(**kwargs)
     return user
 

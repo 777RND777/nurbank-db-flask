@@ -33,7 +33,10 @@ def get_application(application_id: int):
 @marshal_with(ApplicationSchema)
 def approve_application(application_id: int, **_):
     application = Application.get(application_id)
-    if application.answer_date:
+    # TODO messages
+    if not application:
+        return application
+    if len(application.answer_date) > 0:
         return application
 
     application.answer_date = get_current_time()
@@ -53,7 +56,10 @@ def approve_application(application_id: int, **_):
 @marshal_with(ApplicationSchema)
 def decline_application(application_id: int, **_):
     application = Application.get(application_id)
-    if application.answer_date:
+    # TODO messages
+    if not application:
+        return application
+    if len(application.answer_date) > 0:
         return application
 
     application.answer_date = get_current_time()
