@@ -46,7 +46,7 @@ def get_user_pending(user_id: int):
     # TODO messages
     if len(applications) == 0:
         return None
-    if applications[-1].answer_date:
+    if len(applications[-1].answer_date) > 0:
         return None
 
     return applications[-1]
