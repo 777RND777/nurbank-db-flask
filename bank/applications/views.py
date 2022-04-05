@@ -44,6 +44,7 @@ def approve_application(application_id: int, **_):
     application.save()
 
     user = User.get(application.user_id)
+    # no check because of check_user func
     user.debt += application.value
     user.save()
 

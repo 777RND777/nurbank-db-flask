@@ -58,10 +58,7 @@ def get_user_pending(user_id: int):
 @marshal_with(UserSchema)
 def update_user(user_id: int, **kwargs):
     user = User.get(user_id)
-    # TODO messages
-    if not user:
-        return None
-
+    # no check because of check_user func
     user.update(**kwargs)
     return user
 
