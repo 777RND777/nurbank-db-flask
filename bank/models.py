@@ -8,7 +8,7 @@ class User(Base):
     __tablename__ = "users"
 
     pk = Column(Integer, primary_key=True)
-    id = Column(Integer, unique=True, nullable=False)
+    _id = Column(Integer, unique=True, nullable=False)
     password_hash = Column(BINARY(250), nullable=False)
     first_name = Column(String(250), nullable=False)
     last_name = Column(String(250), nullable=False)
@@ -22,7 +22,7 @@ class User(Base):
     def json(self):
         return {
             "pk": self.pk,
-            "id": self.id,
+            "_id": self._id,
             "first_name": self.first_name,
             "last_name": self.last_name,
             "username": self.username,
@@ -38,7 +38,7 @@ class User(Base):
 
     @classmethod
     def get(cls, user_id: int):
-        user = cls.query.filter(cls.id == user_id).first()
+        user = cls.query.filter(cls._id == user_id).first()
         session.commit()
         return user
 
@@ -60,8 +60,8 @@ class Application(Base):
     __tablename__ = "applications"
 
     pk = Column(Integer, primary_key=True)
-    id = Column(Integer, unique=True, nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    _id = Column(Integer, unique=True, nullable=False)
+    user_id = Column(Integer, ForeignKey("users._id"), nullable=False)
     value = Column(Integer, nullable=False)
     request_date = Column(String(50), nullable=False)
     answer_date = Column(String(50), nullable=False, default='')
@@ -74,7 +74,7 @@ class Application(Base):
     def json(self):
         return {
             "pk": self.pk,
-            "id": self.id,
+            "_id": self._id,
             "user_id": self.user_id,
             "request_date": self.request_date,
             "answer_date": self.answer_date,
@@ -90,7 +90,7 @@ class Application(Base):
 
     @classmethod
     def get(cls, application_id: int):
-        application = cls.query.filter(cls.id == application_id).first()
+        application = cls.query.filter(cls._id == application_id).first()
         session.commit()
         return application
 

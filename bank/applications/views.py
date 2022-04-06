@@ -5,7 +5,7 @@ from bank import docs
 from bank.auth import check_user
 from bank.models import Application, User
 from bank.schemas import ApplicationSchemaBase, ApplicationSchemaCreate
-from .helpers import get_current_time
+from .helpers import get_current_time, get_unique_id
 
 applications = Blueprint("applications", __name__)
 
@@ -14,6 +14,7 @@ applications = Blueprint("applications", __name__)
 @use_kwargs(ApplicationSchemaCreate)
 @check_user
 def create_application(**kwargs) -> (dict, int):
+    kwargs['_id'] = get_unique_id()
     kwargs['request_date'] = get_current_time()
 
     application = Application(**kwargs)

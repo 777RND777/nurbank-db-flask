@@ -12,6 +12,9 @@ users = Blueprint("users", __name__)
 @users.route("/users", methods=["POST"])
 @use_kwargs(UserSchemaCreate)
 def create_user(**kwargs) -> (dict, int):
+    if User.get(kwargs['_id']):
+        return {}, 400
+
     kwargs['nickname'] = kwargs['username']
     kwargs['password_hash'] = hash_password(kwargs.pop('password'))
 

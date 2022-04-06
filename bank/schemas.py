@@ -3,7 +3,6 @@ from marshmallow.fields import Boolean, Integer, String
 
 
 class ApplicationSchemaBase(Schema):
-    id = Integer()
     user_id = Integer(required=True)
     password = String(required=True, validate=[validate.Length(max=250)])
 
@@ -15,6 +14,7 @@ class ApplicationSchemaCreate(ApplicationSchemaBase):
 
 class ApplicationSchema(ApplicationSchemaBase):
     pk = Integer(dump_only=True)
+    _id = Integer()
     value = Integer()
     request_date = String(validate=[validate.Length(max=50)])
     answer_date = String(validate=[validate.Length(max=50)])
@@ -23,7 +23,7 @@ class ApplicationSchema(ApplicationSchemaBase):
 
 
 class UserSchemaBase(Schema):
-    id = Integer()
+    _id = Integer()
     password = String(required=True, validate=[validate.Length(max=250)])
 
 
