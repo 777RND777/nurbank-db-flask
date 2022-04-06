@@ -37,9 +37,9 @@ def get_application(application_id: int) -> (dict, int):
 def approve_application(application_id: int, **_) -> (dict, int):
     application = Application.get(application_id)
     if not application:
-        return application, 404
+        return {}, 404
     if len(application.answer_date) > 0:
-        return application, 204
+        return {}, 204
 
     application.answer_date = get_current_time()
     application.approved = True
@@ -59,9 +59,9 @@ def approve_application(application_id: int, **_) -> (dict, int):
 def decline_application(application_id: int, **_) -> (dict, int):
     application = Application.get(application_id)
     if not application:
-        return application, 404
+        return {}, 404
     if len(application.answer_date) > 0:
-        return application, 204
+        return {}, 204
 
     application.answer_date = get_current_time()
     application.save()
