@@ -1,4 +1,5 @@
-from bank import app
+from bank import create_app
 
 if __name__ == "__main__":
-    app.run()
+    app = create_app()
+    app.run(port=8080)
