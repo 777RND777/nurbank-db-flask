@@ -9,7 +9,7 @@ app.config.from_pyfile('config.py')
 init_db()
 docs = FlaskApiSpec()
 
-# importing here because of circular import error]
+# importing here because of circular import error
 from .applications.views import applications
 from .users.views import users
 app.register_blueprint(applications)

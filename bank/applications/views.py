@@ -19,7 +19,7 @@ def create_application(**kwargs) -> (dict, int):
 
     application = Application(**kwargs)
     application.save()
-    return application, 200
+    return application.json, 200
 
 
 @applications.route("/applications/<int:application_id>", methods=["GET"])
@@ -50,7 +50,7 @@ def approve_application(application_id: int, **_) -> (dict, int):
     user.debt += application.value
     user.save()
 
-    return application, 201
+    return application.json, 201
 
 
 @applications.route("/applications/<int:application_id>/decline", methods=["PUT"])
@@ -65,7 +65,7 @@ def decline_application(application_id: int, **_) -> (dict, int):
 
     application.answer_date = get_current_time()
     application.save()
-    return application, 201
+    return application.json, 201
 
 
 docs.register(create_application, blueprint="applications")
