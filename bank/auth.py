@@ -9,17 +9,15 @@ def hash_password(password: str) -> bytes:
     return hashed_password
 
 
-def check_user(func):
+def check_user(func) -> (dict, int):
     def wrapper(**kwargs):
         user = User.get(kwargs['user_id'])
-        # TODO messages
         if not user:
-            return
+            return {}, 401
 
         password = kwargs['password'].encode('utf-8')
-        # TODO messages
         if hashpw(password, user.password_hash) != user.password_hash:
-            return
+            return {}, 401
 
         kwargs.pop('password')
         return func(**kwargs)

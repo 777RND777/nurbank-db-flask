@@ -1,10 +1,10 @@
 from flask import Blueprint
-from flask_apispec import marshal_with, use_kwargs
+from flask_apispec import use_kwargs
 
 from bank import docs
 from bank.auth import check_user
 from bank.models import Application, User
-from bank.schemas import ApplicationSchema, ApplicationSchemaBase, ApplicationSchemaCreate
+from bank.schemas import ApplicationSchemaBase, ApplicationSchemaCreate
 from .helpers import get_current_time
 
 applications = Blueprint("applications", __name__)
@@ -13,31 +13,32 @@ applications = Blueprint("applications", __name__)
 @applications.route("/applications", methods=["POST"])
 @use_kwargs(ApplicationSchemaCreate)
 @check_user
-@marshal_with(ApplicationSchema)
-def create_application(**kwargs):
+def create_application(**kwargs) -> (dict, int):
     kwargs['request_date'] = get_current_time()
+
     application = Application(**kwargs)
     application.save()
-    return application
+    return application, 200
 
 
 @applications.route("/applications/<int:application_id>", methods=["GET"])
-@marshal_with(ApplicationSchema)
-def get_application(application_id: int):
-    return Application.get(application_id)
+def get_application(application_id: int) -> (dict, int):
+    application = Application.get(application_id)
+    if not application:
+        return {}, 404
+
+    return application.json, 200
 
 
 @applications.route("/applications/<int:application_id>/approve", methods=["PUT"])
 @use_kwargs(ApplicationSchemaBase)
 @check_user
-@marshal_with(ApplicationSchema)
-def approve_application(application_id: int, **_):
+def approve_application(application_id: int, **_) -> (dict, int):
     application = Application.get(application_id)
-    # TODO messages
     if not application:
-        return application
+        return application, 404
     if len(application.answer_date) > 0:
-        return application
+        return application, 204
 
     application.answer_date = get_current_time()
     application.approved = True
@@ -48,24 +49,22 @@ def approve_application(application_id: int, **_):
     user.debt += application.value
     user.save()
 
-    return application
+    return application, 201
 
 
 @applications.route("/applications/<int:application_id>/decline", methods=["PUT"])
 @use_kwargs(ApplicationSchemaBase)
 @check_user
-@marshal_with(ApplicationSchema)
-def decline_application(application_id: int, **_):
+def decline_application(application_id: int, **_) -> (dict, int):
     application = Application.get(application_id)
-    # TODO messages
     if not application:
-        return application
+        return application, 404
     if len(application.answer_date) > 0:
-        return application
+        return application, 204
 
     application.answer_date = get_current_time()
     application.save()
-    return application
+    return application, 201
 
 
 docs.register(create_application, blueprint="applications")

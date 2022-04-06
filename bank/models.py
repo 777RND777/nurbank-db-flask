@@ -18,6 +18,18 @@ class User(Base):
 
     applications = relationship("Application", back_populates="user", lazy=True)
 
+    @property
+    def json(self):
+        return {
+            "pk": self.pk,
+            "id": self.id,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "username": self.username,
+            "nickname": self.nickname,
+            "debt": self.debt
+        }
+
     @classmethod
     def get_list(cls):
         users = cls.query.all()
@@ -57,6 +69,18 @@ class Application(Base):
     is_admin = Column(Boolean, nullable=False, default=False)
 
     user = relationship("User", back_populates="applications", lazy=True)
+
+    @property
+    def json(self):
+        return {
+            "pk": self.pk,
+            "id": self.id,
+            "user_id": self.user_id,
+            "request_date": self.request_date,
+            "answer_date": self.answer_date,
+            "approved": self.approved,
+            "is_admin": self.is_admin
+        }
 
     @classmethod
     def get_user_list(cls, user_id: int):
