@@ -40,7 +40,7 @@ def get_user(user_id: int) -> (dict, int):
 @users.route("/users/<int:user_id>/applications", methods=["GET"])
 def get_user_applications(user_id: int) -> (list, int):
     if not User.get(user_id):
-        return [], 404
+        return jsonify([]), 404
 
     return jsonify([x.json for x in Application.get_user_list(user_id)]), 200
 
