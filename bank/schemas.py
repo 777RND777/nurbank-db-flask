@@ -9,7 +9,7 @@ class ApplicationSchemaBase(Schema):
 
 class ApplicationSchemaCreate(ApplicationSchemaBase):
     value = Integer(required=True)
-    is_admin = Boolean(default=False)
+    is_admin = Boolean(dump_default=False)
 
 
 class ApplicationSchema(ApplicationSchemaBase):
