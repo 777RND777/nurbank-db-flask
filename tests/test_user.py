@@ -1,4 +1,14 @@
 def test_create_user(client, user):
+    user['username2'] = ""
+    response = client.post("/users", json=user)
+    assert response.status_code == 422
+    del user["username2"]
+
+    username = user.pop("username")
+    response = client.post("/users", json=user)
+    assert response.status_code == 422
+
+    user['username'] = username
     response = client.post("/users", json=user)
     assert response.status_code == 200
 
@@ -84,9 +94,18 @@ def test_update_user(client, user):
     response = client.post("/users", json=user)
     assert response.status_code == 200
 
-    wrong_auth = {"password": "wrong_password", "nickname": "nickname"}
-    response = client.put(f"/users/{user['_id']}", json=wrong_auth)
+    auth = {"password": user['password'], "nickname": "nickname", "nickname2": ""}
+    response = client.put(f"/users/{user['_id']}", json=auth)
+    assert response.status_code == 422
+
+    auth = {"nickname": "nickname"}
+    response = client.put(f"/users/{user['_id']}", json=auth)
+    assert response.status_code == 422
+
+    auth = {"password": "wrong_password", "nickname": "nickname"}
+    response = client.put(f"/users/{user['_id']}", json=auth)
     assert response.status_code == 401
 
+    auth = {"password": user['password'], "nickname": "nickname"}
     response = client.put(f"/users/{user['_id']}", json=auth)
     assert response.status_code == 201
