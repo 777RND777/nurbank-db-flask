@@ -4,6 +4,11 @@ import pytest
 
 
 @pytest.fixture()
+def n():
+    return 3
+
+
+@pytest.fixture()
 def auth():
     return {
         "user_id": 1,  # named so instead of "_id" because of application requests

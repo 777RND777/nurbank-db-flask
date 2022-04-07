@@ -6,6 +6,21 @@ def test_create_user(client, user):
     assert response.status_code == 400
 
 
+def test_get_user_list(client, user, n):
+    response = client.get(f"/users")
+    assert response.status_code == 200
+    assert len(response.json) == 0
+
+    for i in range(n):
+        user['_id'] += i
+        response = client.post("/users", json=user)
+        assert response.status_code == 200
+
+    response = client.get(f"/users")
+    assert response.status_code == 200
+    assert len(response.json) == n
+
+
 def test_get_user(client, user):
     response = client.get(f"/users/{user['_id']}")
     assert response.status_code == 404
@@ -17,7 +32,7 @@ def test_get_user(client, user):
     assert response.status_code == 200
 
 
-def test_get_user_applications(client, user, application):
+def test_get_user_applications(client, user, application, n):
     response = client.get(f"/users/{user['_id']}/applications")
     assert response.status_code == 404
 
@@ -28,16 +43,13 @@ def test_get_user_applications(client, user, application):
     assert response.status_code == 200
     assert len(response.json) == 0
 
-    response = client.post("/applications", json=application)
-    assert response.status_code == 200
-    response = client.post("/applications", json=application)
-    assert response.status_code == 200
-    response = client.post("/applications", json=application)
-    assert response.status_code == 200
+    for _ in range(n):
+        response = client.post("/applications", json=application)
+        assert response.status_code == 200
 
     response = client.get(f"/users/{user['_id']}/applications")
     assert response.status_code == 200
-    assert len(response.json) == 3
+    assert len(response.json) == n
 
 
 def test_get_user_pending(client, user, application, auth):
