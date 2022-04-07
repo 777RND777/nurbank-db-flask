@@ -93,6 +93,7 @@ def test_update_user(client, user):
 
     response = client.post("/users", json=user)
     assert response.status_code == 200
+    nickname = response.json['nickname']
 
     auth = {"password": user['password'], "nickname": "nickname", "nickname2": ""}
     response = client.put(f"/users/{user['_id']}", json=auth)
@@ -109,3 +110,7 @@ def test_update_user(client, user):
     auth = {"password": user['password'], "nickname": "nickname"}
     response = client.put(f"/users/{user['_id']}", json=auth)
     assert response.status_code == 201
+
+    response = client.get(f"/users/{user['_id']}", json=user)
+    assert response.status_code == 200
+    assert response.json['nickname'] != nickname
