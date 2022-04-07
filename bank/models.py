@@ -59,7 +59,7 @@ class User(db.Model):
 
     pk = db.Column(db.Integer, primary_key=True)
     _id = db.Column(db.Integer, unique=True, nullable=False)
-    password_hash = db.Column(db.BINARY(250), nullable=False)
+    hashed_password = db.Column(db.BINARY(250), nullable=False)
     first_name = db.Column(db.String(250), nullable=False)
     last_name = db.Column(db.String(250), nullable=False)
     username = db.Column(db.String(250), nullable=False)

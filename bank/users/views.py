@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify
 from flask_apispec import use_kwargs
 
 from bank import docs
-from bank.auth import check_user, hash_password
+from bank.auth import check_password, hash_password
 from bank.models import Application, User
 from bank.schemas import UserSchema, UserSchemaCreate
 
@@ -16,7 +16,7 @@ def create_user(**kwargs) -> (dict, int):
         return {}, 400
 
     kwargs['nickname'] = kwargs['username']
-    kwargs['password_hash'] = hash_password(kwargs.pop('password'))
+    kwargs['hashed_password'] = hash_password(kwargs.pop('password'))
 
     user = User(**kwargs)
     user.save()
@@ -59,10 +59,14 @@ def get_user_pending(user_id: int) -> (dict, int):
 
 @users.route("/users/<int:user_id>", methods=["PUT"])
 @use_kwargs(UserSchema)
-@check_user
-def update_user(user_id: int, **kwargs) -> (dict, int):
+def update_user(user_id: int, password: str, **kwargs) -> (dict, int):
     user = User.get(user_id)
-    # no check because of check_user func
+    if not user:
+        return {}, 404
+
+    if not check_password(password, user.hashed_password):
+        return {}, 401
+
     user.update(**kwargs)
     return user.json, 201
 

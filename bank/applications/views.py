@@ -2,7 +2,7 @@ from flask import Blueprint
 from flask_apispec import use_kwargs
 
 from bank import docs
-from bank.auth import check_user
+from bank.auth import auth
 from bank.models import Application, User
 from bank.schemas import ApplicationSchemaBase, ApplicationSchemaCreate
 from .helpers import get_current_time, get_unique_id
@@ -12,7 +12,7 @@ applications = Blueprint("applications", __name__)
 
 @applications.route("/applications", methods=["POST"])
 @use_kwargs(ApplicationSchemaCreate)
-@check_user
+@auth
 def create_application(**kwargs) -> (dict, int):
     kwargs['_id'] = get_unique_id()
     kwargs['request_date'] = get_current_time()
@@ -33,7 +33,7 @@ def get_application(application_id: int) -> (dict, int):
 
 @applications.route("/applications/<int:application_id>/approve", methods=["PUT"])
 @use_kwargs(ApplicationSchemaBase)
-@check_user
+@auth
 def approve_application(application_id: int, **_) -> (dict, int):
     application = Application.get(application_id)
     if not application:
@@ -55,7 +55,7 @@ def approve_application(application_id: int, **_) -> (dict, int):
 
 @applications.route("/applications/<int:application_id>/decline", methods=["PUT"])
 @use_kwargs(ApplicationSchemaBase)
-@check_user
+@auth
 def decline_application(application_id: int, **_) -> (dict, int):
     application = Application.get(application_id)
     if not application:
