@@ -62,3 +62,19 @@ def test_get_user_pending(client, user, application, auth):
 
     response = client.get(f"/users/{user['_id']}/pending")
     assert response.status_code == 204
+
+
+def test_update_user(client, user):
+    auth = {"password": user['password'], "nickname": "nickname"}
+    response = client.put(f"/users/{user['_id']}", json=auth)
+    assert response.status_code == 404
+
+    response = client.post("/users", json=user)
+    assert response.status_code == 200
+
+    wrong_auth = {"password": "wrong_password", "nickname": "nickname"}
+    response = client.put(f"/users/{user['_id']}", json=wrong_auth)
+    assert response.status_code == 401
+
+    response = client.put(f"/users/{user['_id']}", json=auth)
+    assert response.status_code == 201
