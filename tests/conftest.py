@@ -19,7 +19,8 @@ def client():
     with app.test_client() as client:
         yield client
 
-    os.remove(os.path.join("bank", name))
+    path = os.path.join("..", "bank", name) if os.getcwd().endswith("tests") else os.path.join("bank", name)
+    os.remove(path)
 
 
 @pytest.fixture()
