@@ -1,5 +1,5 @@
-from bank import create_app
-from bank.models import Application, User
+from bank import create_app, db
+import os
 import pytest
 
 
@@ -36,8 +36,12 @@ def client(auth):
     app = create_app()
     app.config['TESTING'] = True
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///../bank/fake_db.sqlite"
+
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
+
     with app.test_client() as client:
         yield client
 
-    with app.app_context():
-        db.create_all()
+    os.remove(os.path.join("", "..", "bank", "fake_db.sqlite"))
