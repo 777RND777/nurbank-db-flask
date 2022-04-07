@@ -24,6 +24,7 @@ class Application(Base):
             "pk": self.pk,
             "_id": self._id,
             "user_id": self.user_id,
+            "value": self.value,
             "request_date": self.request_date,
             "answer_date": self.answer_date,
             "approved": self.approved,
