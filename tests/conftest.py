@@ -4,8 +4,22 @@ import pytest
 
 
 @pytest.fixture()
-def n():
-    return 3
+def client():
+    app = create_app()
+    app.config['TESTING'] = True
+    name = "fake_db.sqlite"
+    path = f"../bank/{name}" if os.getcwd().endswith("tests") else name
+
+    app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{path}"
+
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
+
+    with app.test_client() as client:
+        yield client
+
+    os.remove(os.path.join("bank", name))
 
 
 @pytest.fixture()
@@ -37,16 +51,5 @@ def user(auth):
 
 
 @pytest.fixture()
-def client(auth):
-    app = create_app()
-    app.config['TESTING'] = True
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///../bank/fake_db.sqlite"
-
-    db.init_app(app)
-    with app.app_context():
-        db.create_all()
-
-    with app.test_client() as client:
-        yield client
-
-    os.remove(os.path.join("", "..", "bank", "fake_db.sqlite"))
+def n():
+    return 3
