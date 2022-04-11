@@ -17,7 +17,7 @@ def test_create_user(client, user):
 
 
 def test_get_user_list(client, user, n):
-    response = client.get(f"/users")
+    response = client.get("/users")
     assert response.status_code == 200
     assert len(response.json) == 0
 
@@ -26,7 +26,7 @@ def test_get_user_list(client, user, n):
         response = client.post("/users", json=user)
         assert response.status_code == 200
 
-    response = client.get(f"/users")
+    response = client.get("/users")
     assert response.status_code == 200
     assert len(response.json) == n
 
