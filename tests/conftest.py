@@ -52,5 +52,10 @@ def user(auth):
 
 
 @pytest.fixture()
+def nickname():
+    return "nickname"
+
+
+@pytest.fixture()
 def n():
     return 3

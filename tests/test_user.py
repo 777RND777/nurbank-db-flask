@@ -86,31 +86,31 @@ def test_get_user_pending(client, user, application, auth):
     assert response.status_code == 204
 
 
-def test_update_user(client, user):
-    auth = {"password": user['password'], "nickname": "nickname"}
+def test_update_user(client, user, nickname):
+    auth = {"password": user['password'], "nickname": nickname}
     response = client.put(f"/users/{user['_id']}", json=auth)
     assert response.status_code == 404
 
     response = client.post("/users", json=user)
     assert response.status_code == 200
-    nickname = response.json['nickname']
+    assert response.json['nickname'] == user['username']
 
-    auth = {"password": user['password'], "nickname": "nickname", "nickname2": ""}
+    auth = {"password": user['password'], "nickname": nickname, "nickname2": ""}
     response = client.put(f"/users/{user['_id']}", json=auth)
     assert response.status_code == 422
 
-    auth = {"nickname": "nickname"}
+    auth = {"nickname": nickname}
     response = client.put(f"/users/{user['_id']}", json=auth)
     assert response.status_code == 422
 
-    auth = {"password": "wrong_password", "nickname": "nickname"}
+    auth = {"password": "wrong_password", "nickname": nickname}
     response = client.put(f"/users/{user['_id']}", json=auth)
     assert response.status_code == 401
 
-    auth = {"password": user['password'], "nickname": "nickname"}
+    auth = {"password": user['password'], "nickname": nickname}
     response = client.put(f"/users/{user['_id']}", json=auth)
     assert response.status_code == 201
 
     response = client.get(f"/users/{user['_id']}", json=user)
     assert response.status_code == 200
-    assert response.json['nickname'] != nickname
+    assert response.json['nickname'] == nickname

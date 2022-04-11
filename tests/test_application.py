@@ -27,6 +27,35 @@ def test_get_application(client, user, application):
     assert response.status_code == 200
 
 
+def test_update_application(client, user, application):
+    response = client.post("/users", json=user)
+    assert response.status_code == 200
+
+    response = client.post("/applications", json=application)
+    assert response.status_code == 200
+    application_id = response.json['_id']
+
+    auth = {"user_id": user['_id'], "password": user['password'], "password2": ""}
+    response = client.put(f"/applications/{application_id}", json=auth)
+    assert response.status_code == 422
+
+    auth = {"user_id": user['_id']}
+    response = client.put(f"/applications/{application_id}", json=auth)
+    assert response.status_code == 422
+
+    auth = {"user_id": user['_id'], "password": "wrong_password"}
+    response = client.put(f"/applications/{application_id}", json=auth)
+    assert response.status_code == 401
+
+    auth = {"user_id": user['_id'], "password": user['password'], "value": application['value'] + 1}
+    response = client.put(f"/applications/{application_id}", json=auth)
+    assert response.status_code == 201
+
+    response = client.get(f"/applications/{application_id}")
+    assert response.status_code == 200
+    assert response.json['value'] == application['value'] + 1
+
+
 def test_approve_application(client, user, application):
     response = client.post("/users", json=user)
     assert response.status_code == 200

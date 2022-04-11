@@ -4,7 +4,7 @@ from flask_apispec import use_kwargs
 from bank import docs
 from bank.auth import auth
 from bank.models import Application, User
-from bank.schemas import ApplicationSchemaBase, ApplicationSchemaCreate
+from bank.schemas import ApplicationSchema, ApplicationSchemaBase, ApplicationSchemaCreate
 from .helpers import get_current_time, get_unique_id
 
 applications = Blueprint("applications", __name__)
@@ -29,6 +29,21 @@ def get_application(application_id: int) -> (dict, int):
         return {}, 404
 
     return application.json, 200
+
+
+@applications.route("/applications/<int:application_id>", methods=["PUT"])
+@use_kwargs(ApplicationSchema)
+@auth
+def update_application(application_id: int, **kwargs) -> (dict, int):
+    application = Application.get(application_id)
+    if not application:
+        return {}, 404
+    if len(application.answer_date) > 0:
+        return {}, 204
+
+    application.update(**kwargs)
+    application.save()
+    return application.json, 201
 
 
 @applications.route("/applications/<int:application_id>/approve", methods=["PUT"])
