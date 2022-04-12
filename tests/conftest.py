@@ -7,10 +7,9 @@ import pytest
 def client():
     app = create_app()
     app.config['TESTING'] = True
-    name = "fake_db.sqlite"
-    path = f"../bank/{name}" if os.getcwd().endswith("tests") else name
+    path = "test_db.sqlite"
 
-    app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{path}"
+    app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///../tests/{path}"
 
     db.init_app(app)
     with app.app_context():
@@ -19,7 +18,9 @@ def client():
     with app.test_client() as client:
         yield client
 
-    path = os.path.join("..", "bank", name) if os.getcwd().endswith("tests") else os.path.join("bank", name)
+    if not os.getcwd().endswith("tests"):
+        # run is not from test dir (e.g. from terminal)
+        path = os.path.join("tests", path)
     os.remove(path)
 
 
