@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, Response
 from flask_apispec import use_kwargs
 
 from bank import docs
@@ -24,7 +24,7 @@ def create_user(**kwargs) -> (dict, int):
 
 
 @users.route("/users", methods=["GET"])
-def get_user_list() -> (list, int):
+def get_user_list() -> (Response, int):
     return jsonify([x.json for x in User.get_list()]), 200
 
 
@@ -38,7 +38,7 @@ def get_user(user_id: int) -> (dict, int):
 
 
 @users.route("/users/<int:user_id>/applications", methods=["GET"])
-def get_user_applications(user_id: int) -> (list, int):
+def get_user_applications(user_id: int) -> (Response, int):
     if not User.get(user_id):
         return jsonify([]), 404
 
