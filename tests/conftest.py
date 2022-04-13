@@ -1,6 +1,8 @@
-from bank import create_app, db
 import os
+
 import pytest
+
+from bank import create_app, db
 
 
 @pytest.fixture()
