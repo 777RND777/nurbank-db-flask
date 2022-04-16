@@ -9,9 +9,9 @@ def hash_password(password: str) -> bytes:
     return hashed_password
 
 
-def check_password(password: str, hashed_password: bytes):
-    password = password.encode('utf-8')
-    return hashpw(password, hashed_password) == hashed_password
+def check_password(input_password: str, hashed_password: bytes):
+    input_password = input_password.encode('utf-8')
+    return hashpw(input_password, hashed_password) == hashed_password
 
 
 def auth(func) -> (dict, int):
@@ -20,7 +20,7 @@ def auth(func) -> (dict, int):
         if not user:
             return {}, 401
 
-        if not check_password(kwargs.pop('password'), user.hashed_password):
+        if not check_password(kwargs.pop('password'), user.password):
             return {}, 401
 
         return func(**kwargs)

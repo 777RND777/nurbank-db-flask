@@ -3,9 +3,8 @@ from flask_apispec import use_kwargs
 
 from bank import docs
 from bank.auth import auth
-from bank.models import Application, User
 from bank.schemas import ApplicationSchema, ApplicationSchemaBase, ApplicationSchemaCreate
-from .helpers import get_current_time, get_unique_id
+from . import crud
 
 applications = Blueprint("applications", __name__)
 
@@ -14,17 +13,12 @@ applications = Blueprint("applications", __name__)
 @use_kwargs(ApplicationSchemaCreate)
 @auth
 def create_application(**kwargs) -> (dict, int):
-    kwargs['_id'] = get_unique_id()
-    kwargs['request_date'] = get_current_time()
-
-    application = Application(**kwargs)
-    application.save()
-    return application.json, 200
+    return crud.create_application(**kwargs).json, 200
 
 
 @applications.route("/applications/<int:application_id>", methods=["GET"])
 def get_application(application_id: int) -> (dict, int):
-    application = Application.get(application_id)
+    application = crud.get_application(application_id)
     if not application:
         return {}, 404
 
@@ -35,14 +29,11 @@ def get_application(application_id: int) -> (dict, int):
 @use_kwargs(ApplicationSchema)
 @auth
 def update_application(application_id: int, **kwargs) -> (dict, int):
-    application = Application.get(application_id)
+    application = crud.get_application(application_id)
     if not application:
         return {}, 404
-    if len(application.answer_date) > 0:
-        return {}, 204
 
-    application.update(**kwargs)
-    application.save()
+    crud.update_application(application, **kwargs)
     return application.json, 201
 
 
@@ -50,21 +41,13 @@ def update_application(application_id: int, **kwargs) -> (dict, int):
 @use_kwargs(ApplicationSchemaBase)
 @auth
 def approve_application(application_id: int, **_) -> (dict, int):
-    application = Application.get(application_id)
+    application = crud.get_application(application_id)
     if not application:
         return {}, 404
     if len(application.answer_date) > 0:
         return {}, 204
 
-    application.answer_date = get_current_time()
-    application.approved = True
-    application.save()
-
-    user = User.get(application.user_id)
-    # no check because of auth func
-    user.debt += application.value
-    user.save()
-
+    crud.approve_application(application)
     return application.json, 201
 
 
@@ -72,14 +55,13 @@ def approve_application(application_id: int, **_) -> (dict, int):
 @use_kwargs(ApplicationSchemaBase)
 @auth
 def decline_application(application_id: int, **_) -> (dict, int):
-    application = Application.get(application_id)
+    application = crud.get_application(application_id)
     if not application:
         return {}, 404
     if len(application.answer_date) > 0:
         return {}, 204
 
-    application.answer_date = get_current_time()
-    application.save()
+    crud.decline_application(application)
     return application.json, 201
 
 

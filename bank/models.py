@@ -28,30 +28,11 @@ class Application(db.Model):
             "is_admin": self.is_admin
         }
 
-    @classmethod
-    def get_user_list(cls, user_id: int):
-        applications = cls.query.filter(cls.user_id == user_id).all()
-        db.session.commit()
-        return applications
-
+    # id check
     @classmethod
     def get(cls, application_id: int):
         application = cls.query.filter(cls._id == application_id).first()
-        db.session.commit()
         return application
-
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self, **kwargs):
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
 
 
 class User(db.Model):
@@ -59,7 +40,7 @@ class User(db.Model):
 
     pk = db.Column(db.Integer, primary_key=True)
     _id = db.Column(db.Integer, unique=True, nullable=False)
-    hashed_password = db.Column(db.BINARY(250), nullable=False)
+    password = db.Column(db.BINARY(250), nullable=False)
     first_name = db.Column(db.String(250), nullable=False)
     last_name = db.Column(db.String(250), nullable=False)
     username = db.Column(db.String(250), nullable=False)
@@ -80,27 +61,8 @@ class User(db.Model):
             "debt": self.debt
         }
 
-    @classmethod
-    def get_list(cls):
-        users = cls.query.all()
-        db.session.commit()
-        return users
-
+    # id check
     @classmethod
     def get(cls, user_id: int):
         user = cls.query.filter(cls._id == user_id).first()
-        db.session.commit()
         return user
-
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self, **kwargs):
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
