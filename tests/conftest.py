@@ -29,7 +29,7 @@ def client():
 @pytest.fixture()
 def auth():
     return {
-        "user_id": 1,  # named so instead of "_id" because of application requests
+        "user_id": 1,  # named so instead of "id_" because of application requests
         "password": "password"
     }
 
@@ -46,7 +46,7 @@ def application(auth):
 @pytest.fixture()
 def user(auth):
     return {
-        "_id": auth['user_id'],
+        "id_": auth['user_id'],
         "password": auth['password'],
         "first_name": "first_name",
         "last_name": "last_name",

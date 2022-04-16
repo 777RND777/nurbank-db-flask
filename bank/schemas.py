@@ -14,7 +14,7 @@ class ApplicationSchemaCreate(ApplicationSchemaBase):
 
 class ApplicationSchema(ApplicationSchemaBase):
     pk = Integer(dump_only=True)
-    _id = Integer()
+    id_ = Integer()
     value = Integer()
     request_date = String(validate=[validate.Length(max=50)])
     answer_date = String(validate=[validate.Length(max=50)])
@@ -23,7 +23,7 @@ class ApplicationSchema(ApplicationSchemaBase):
 
 
 class UserSchemaBase(Schema):
-    _id = Integer()
+    id_ = Integer()
     password = String(required=True, validate=[validate.Length(max=250)])
 
 

@@ -21,7 +21,7 @@ def test_get_application(client, user, application):
 
     response = client.post("/applications", json=application)
     assert response.status_code == 200
-    application_id = response.json['_id']
+    application_id = response.json['id_']
 
     response = client.get(f"/applications/{application_id}")
     assert response.status_code == 200
@@ -33,21 +33,21 @@ def test_update_application(client, user, application):
 
     response = client.post("/applications", json=application)
     assert response.status_code == 200
-    application_id = response.json['_id']
+    application_id = response.json['id_']
 
-    auth = {"user_id": user['_id'], "password": user['password'], "password2": ""}
+    auth = {"user_id": user['id_'], "password": user['password'], "password2": ""}
     response = client.put(f"/applications/{application_id}", json=auth)
     assert response.status_code == 422
 
-    auth = {"user_id": user['_id']}
+    auth = {"user_id": user['id_']}
     response = client.put(f"/applications/{application_id}", json=auth)
     assert response.status_code == 422
 
-    auth = {"user_id": user['_id'], "password": "wrong_password"}
+    auth = {"user_id": user['id_'], "password": "wrong_password"}
     response = client.put(f"/applications/{application_id}", json=auth)
     assert response.status_code == 401
 
-    auth = {"user_id": user['_id'], "password": user['password'], "value": application['value'] + 1}
+    auth = {"user_id": user['id_'], "password": user['password'], "value": application['value'] + 1}
     response = client.put(f"/applications/{application_id}", json=auth)
     assert response.status_code == 201
 
@@ -63,28 +63,28 @@ def test_approve_application(client, user, application):
 
     response = client.post("/applications", json=application)
     assert response.status_code == 200
-    application_id = response.json['_id']
+    application_id = response.json['id_']
 
-    auth = {"user_id": user['_id'], "password": user['password'], "password2": ""}
+    auth = {"user_id": user['id_'], "password": user['password'], "password2": ""}
     response = client.put(f"/applications/{application_id}/approve", json=auth)
     assert response.status_code == 422
 
-    auth = {"user_id": user['_id']}
+    auth = {"user_id": user['id_']}
     response = client.put(f"/applications/{application_id}/approve", json=auth)
     assert response.status_code == 422
 
-    auth = {"user_id": user['_id'], "password": "wrong_password"}
+    auth = {"user_id": user['id_'], "password": "wrong_password"}
     response = client.put(f"/applications/{application_id}/approve", json=auth)
     assert response.status_code == 401
 
-    auth = {"user_id": user['_id'], "password": user['password']}
+    auth = {"user_id": user['id_'], "password": user['password']}
     response = client.put(f"/applications/{application_id}/approve", json=auth)
     assert response.status_code == 201
 
     response = client.put(f"/applications/{application_id}/approve", json=auth)
     assert response.status_code == 204
 
-    response = client.get(f"/users/{user['_id']}")
+    response = client.get(f"/users/{user['id_']}")
     assert response.status_code == 200
     assert response.json['debt'] == start_debt + application['value']
 
@@ -96,27 +96,27 @@ def test_decline_application(client, user, application):
 
     response = client.post("/applications", json=application)
     assert response.status_code == 200
-    application_id = response.json['_id']
+    application_id = response.json['id_']
 
-    auth = {"user_id": user['_id'], "password": user['password'], "password2": ""}
+    auth = {"user_id": user['id_'], "password": user['password'], "password2": ""}
     response = client.put(f"/applications/{application_id}/decline", json=auth)
     assert response.status_code == 422
 
-    auth = {"user_id": user['_id']}
+    auth = {"user_id": user['id_']}
     response = client.put(f"/applications/{application_id}/decline", json=auth)
     assert response.status_code == 422
 
-    auth = {"user_id": user['_id'], "password": "wrong_password"}
+    auth = {"user_id": user['id_'], "password": "wrong_password"}
     response = client.put(f"/applications/{application_id}/decline", json=auth)
     assert response.status_code == 401
 
-    auth = {"user_id": user['_id'], "password": user['password']}
+    auth = {"user_id": user['id_'], "password": user['password']}
     response = client.put(f"/applications/{application_id}/decline", json=auth)
     assert response.status_code == 201
 
     response = client.put(f"/applications/{application_id}/decline", json=auth)
     assert response.status_code == 204
 
-    response = client.get(f"/users/{user['_id']}")
+    response = client.get(f"/users/{user['id_']}")
     assert response.status_code == 200
     assert response.json['debt'] == start_debt

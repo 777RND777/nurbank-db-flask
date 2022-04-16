@@ -4,7 +4,7 @@ from .helpers import get_current_time, get_unique_id
 
 
 def create_application(**kwargs):
-    kwargs['_id'] = get_unique_id()
+    kwargs['id_'] = get_unique_id()
     kwargs['request_date'] = get_current_time()
 
     application = Application(**kwargs)
@@ -14,7 +14,7 @@ def create_application(**kwargs):
 
 
 def get_application(application_id: int):
-    application = Application.query.filter(Application._id == application_id).first()
+    application = Application.query.filter(Application.id_ == application_id).first()
     db.session.commit()
     return application
 

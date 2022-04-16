@@ -18,7 +18,7 @@ def get_user_list():
 
 
 def get_user(user_id: int):
-    return User.query.filter(User._id == user_id).first()
+    return User.query.filter(User.id_ == user_id).first()
 
 
 def update_user(user, **kwargs):

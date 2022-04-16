@@ -12,7 +12,7 @@ users = Blueprint("users", __name__)
 @users.route("/users", methods=["POST"])
 @use_kwargs(UserSchemaCreate)
 def create_user(**kwargs) -> (dict, int):
-    if crud.get_user(kwargs['_id']):
+    if crud.get_user(kwargs['id_']):
         return {}, 400
 
     return crud.create_user(kwargs).json, 200
