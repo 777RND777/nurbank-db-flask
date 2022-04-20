@@ -4,7 +4,7 @@ from flask_apispec import marshal_with, use_kwargs
 from bank import docs
 from bank.auth import check_password
 from bank.models import Application, User
-from bank.schemas import ApplicationSchema, ApplicationSchemaOutput, UserSchema, UserSchemaCreate, UserSchemaOutput
+from bank.schemas import ApplicationSchemaOutput, UserSchema, UserSchemaCreate, UserSchemaOutput
 from . import crud
 
 users = Blueprint("users", __name__)
