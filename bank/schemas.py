@@ -22,6 +22,16 @@ class ApplicationSchema(ApplicationSchemaBase):
     is_admin = Boolean()
 
 
+class ApplicationSchemaOutput(Schema):
+    id_ = Integer()
+    user_id = Integer()
+    value = Integer()
+    request_date = String()
+    answer_date = String()
+    approved = Boolean()
+    is_admin = Boolean()
+
+
 class UserSchemaBase(Schema):
     id_ = Integer()
     password = String(required=True, validate=[validate.Length(max=250)])
@@ -39,4 +49,13 @@ class UserSchema(UserSchemaBase):
     last_name = String(validate=[validate.Length(max=250)])
     username = String(validate=[validate.Length(max=250)])
     nickname = String(validate=[validate.Length(max=250)])
+    debt = Integer()
+
+
+class UserSchemaOutput(Schema):
+    id_ = Integer()
+    first_name = String()
+    last_name = String()
+    username = String()
+    nickname = String()
     debt = Integer()

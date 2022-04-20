@@ -1,9 +1,10 @@
 from flask import Blueprint
-from flask_apispec import use_kwargs
+from flask_apispec import marshal_with, use_kwargs
 
 from bank import docs
 from bank.auth import auth
-from bank.schemas import ApplicationSchema, ApplicationSchemaBase, ApplicationSchemaCreate
+from bank.models import Application
+from bank.schemas import ApplicationSchema, ApplicationSchemaBase, ApplicationSchemaCreate, ApplicationSchemaOutput
 from . import crud
 
 applications = Blueprint("applications", __name__)
@@ -11,58 +12,63 @@ applications = Blueprint("applications", __name__)
 
 @applications.route("/applications", methods=["POST"])
 @use_kwargs(ApplicationSchemaCreate)
+@marshal_with(ApplicationSchemaOutput)
 @auth
 def create_application(**kwargs) -> (dict, int):
-    return crud.create_application(**kwargs).json, 200
+    return crud.create_application(**kwargs), 200
 
 
 @applications.route("/applications/<int:application_id>", methods=["GET"])
-def get_application(application_id: int) -> (dict, int):
+@marshal_with(ApplicationSchemaOutput)
+def get_application(application_id: int) -> (Application, int):
     application = crud.get_application(application_id)
     if not application:
-        return {}, 404
+        return None, 404
 
-    return application.json, 200
+    return application, 200
 
 
 @applications.route("/applications/<int:application_id>", methods=["PUT"])
 @use_kwargs(ApplicationSchema)
+@marshal_with(ApplicationSchemaOutput)
 @auth
-def update_application(application_id: int, **kwargs) -> (dict, int):
+def update_application(application_id: int, **kwargs) -> (Application, int):
     application = crud.get_application(application_id)
     if not application:
-        return {}, 404
+        return None, 404
 
     crud.update_application(application, **kwargs)
-    return application.json, 201
+    return application, 201
 
 
 @applications.route("/applications/<int:application_id>/approve", methods=["PUT"])
 @use_kwargs(ApplicationSchemaBase)
+@marshal_with(ApplicationSchemaOutput)
 @auth
-def approve_application(application_id: int, **_) -> (dict, int):
+def approve_application(application_id: int, **_) -> (Application, int):
     application = crud.get_application(application_id)
     if not application:
-        return {}, 404
+        return None, 404
     if len(application.answer_date) > 0:
-        return {}, 204
+        return None, 204
 
     crud.approve_application(application)
-    return application.json, 201
+    return application, 201
 
 
 @applications.route("/applications/<int:application_id>/decline", methods=["PUT"])
 @use_kwargs(ApplicationSchemaBase)
+@marshal_with(ApplicationSchemaOutput)
 @auth
-def decline_application(application_id: int, **_) -> (dict, int):
+def decline_application(application_id: int, **_) -> (Application, int):
     application = crud.get_application(application_id)
     if not application:
-        return {}, 404
+        return None, 404
     if len(application.answer_date) > 0:
-        return {}, 204
+        return None, 204
 
     crud.decline_application(application)
-    return application.json, 201
+    return application, 201
 
 
 docs.register(create_application, blueprint="applications")

@@ -15,19 +15,6 @@ class Application(db.Model):
 
     user = db.relationship("User", back_populates="applications", lazy=True)
 
-    @property
-    def json(self):
-        return {
-            "pk": self.pk,
-            "id_": self.id_,
-            "user_id": self.user_id,
-            "value": self.value,
-            "request_date": self.request_date,
-            "answer_date": self.answer_date,
-            "approved": self.approved,
-            "is_admin": self.is_admin
-        }
-
     # id check
     @classmethod
     def get(cls, application_id: int):
@@ -48,18 +35,6 @@ class User(db.Model):
     debt = db.Column(db.Integer, nullable=False, default=0)
 
     applications = db.relationship("Application", back_populates="user", lazy=True)
-
-    @property
-    def json(self):
-        return {
-            "pk": self.pk,
-            "id_": self.id_,
-            "first_name": self.first_name,
-            "last_name": self.last_name,
-            "username": self.username,
-            "nickname": self.nickname,
-            "debt": self.debt
-        }
 
     # id check
     @classmethod

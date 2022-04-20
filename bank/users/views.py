@@ -1,9 +1,10 @@
-from flask import Blueprint, jsonify, Response
-from flask_apispec import use_kwargs
+from flask import Blueprint
+from flask_apispec import marshal_with, use_kwargs
 
 from bank import docs
 from bank.auth import check_password
-from bank.schemas import UserSchema, UserSchemaCreate
+from bank.models import Application, User
+from bank.schemas import ApplicationSchema, ApplicationSchemaOutput, UserSchema, UserSchemaCreate, UserSchemaOutput
 from . import crud
 
 users = Blueprint("users", __name__)
@@ -11,61 +12,67 @@ users = Blueprint("users", __name__)
 
 @users.route("/users", methods=["POST"])
 @use_kwargs(UserSchemaCreate)
-def create_user(**kwargs) -> (dict, int):
+@marshal_with(UserSchemaOutput)
+def create_user(**kwargs) -> (User, int):
     if crud.get_user(kwargs['id_']):
-        return {}, 400
+        return None, 400
 
-    return crud.create_user(kwargs).json, 200
+    return crud.create_user(kwargs), 200
 
 
 @users.route("/users", methods=["GET"])
-def get_user_list() -> (Response, int):
-    return jsonify(crud.get_user_list()), 200
+@marshal_with(UserSchemaOutput(many=True))
+def get_user_list() -> (list[User], int):
+    return crud.get_user_list(), 200
 
 
 @users.route("/users/<int:user_id>", methods=["GET"])
-def get_user(user_id: int) -> (dict, int):
+@marshal_with(UserSchemaOutput)
+def get_user(user_id: int) -> (User, int):
     user = crud.get_user(user_id)
     if not user:
-        return {}, 404
+        return None, 404
 
-    return user.json, 200
+    return user, 200
 
 
 @users.route("/users/<int:user_id>/applications", methods=["GET"])
-def get_user_applications(user_id: int) -> (Response, int):
+@marshal_with(ApplicationSchemaOutput(many=True))
+def get_user_applications(user_id: int) -> (list[Application], int):
     user = crud.get_user(user_id)
     if not user:
-        return jsonify([]), 404
+        return None, 404
 
-    return jsonify([x.json for x in user.applications]), 200
+    return [x for x in user.applications], 200
 
 
 @users.route("/users/<int:user_id>/pending", methods=["GET"])
-def get_user_pending(user_id: int) -> (dict, int):
+@marshal_with(ApplicationSchemaOutput)
+def get_user_pending(user_id: int) -> (Application, int):
     user = crud.get_user(user_id)
     if not user:
-        return {}, 404
+        return None, 404
 
     applications = user.applications
     if len(applications) == 0 or len(applications[-1].answer_date) > 0:
-        return {}, 204
+        return None, 204
 
-    return applications[-1].json, 200
+    return applications[-1], 200
 
 
 @users.route("/users/<int:user_id>", methods=["PUT"])
 @use_kwargs(UserSchema)
-def update_user(user_id: int, password: str, **kwargs) -> (dict, int):
+@marshal_with(UserSchemaOutput)
+def update_user(user_id: int, password: str, **kwargs) -> (User, int):
     user = crud.get_user(user_id)
     if not user:
-        return {}, 404
+        return None, 404
 
     if not check_password(password, user.password):
-        return {}, 401
+        return None, 401
 
     crud.update_user(user, **kwargs)
-    return user.json, 201
+    return user, 201
 
 
 docs.register(get_user_list, blueprint="users")

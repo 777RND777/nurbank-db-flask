@@ -14,7 +14,7 @@ def create_user(kwargs):
 
 
 def get_user_list():
-    return [x.json for x in User.query.all()]
+    return [x for x in User.query.all()]
 
 
 def get_user(user_id: int):
