@@ -14,7 +14,7 @@ applications = Blueprint("applications", __name__)
 @use_kwargs(ApplicationSchemaCreate)
 @marshal_with(ApplicationSchemaOutput)
 @auth
-def create_application(**kwargs) -> (dict, int):
+def create_application(**kwargs) -> (Application, int):
     return crud.create_application(**kwargs), 200
 
 
