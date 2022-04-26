@@ -10,7 +10,7 @@ from . import crud
 applications = Blueprint("applications", __name__)
 
 
-@applications.route("/applications", methods=["POST"])
+@applications.post("/applications")
 @use_kwargs(ApplicationSchemaCreate)
 @marshal_with(ApplicationSchemaOutput)
 @auth
@@ -18,7 +18,7 @@ def create_application(**kwargs) -> (Application, int):
     return crud.create_application(**kwargs), 200
 
 
-@applications.route("/applications/<int:application_id>", methods=["GET"])
+@applications.get("/applications/<int:application_id>")
 @marshal_with(ApplicationSchemaOutput)
 def get_application(application_id: int) -> (Application, int):
     application = crud.get_application(application_id)
@@ -28,7 +28,7 @@ def get_application(application_id: int) -> (Application, int):
     return application, 200
 
 
-@applications.route("/applications/<int:application_id>", methods=["PUT"])
+@applications.put("/applications/<int:application_id>")
 @use_kwargs(ApplicationSchema)
 @marshal_with(ApplicationSchemaOutput)
 @auth
@@ -41,7 +41,7 @@ def update_application(application_id: int, **kwargs) -> (Application, int):
     return application, 201
 
 
-@applications.route("/applications/<int:application_id>/approve", methods=["PUT"])
+@applications.put("/applications/<int:application_id>/approve")
 @use_kwargs(ApplicationSchemaBase)
 @marshal_with(ApplicationSchemaOutput)
 @auth
@@ -56,7 +56,7 @@ def approve_application(application_id: int, **_) -> (Application, int):
     return application, 201
 
 
-@applications.route("/applications/<int:application_id>/decline", methods=["PUT"])
+@applications.put("/applications/<int:application_id>/decline")
 @use_kwargs(ApplicationSchemaBase)
 @marshal_with(ApplicationSchemaOutput)
 @auth

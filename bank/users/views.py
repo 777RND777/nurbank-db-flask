@@ -10,7 +10,7 @@ from . import crud
 users = Blueprint("users", __name__)
 
 
-@users.route("/users", methods=["POST"])
+@users.post("/users")
 @use_kwargs(UserSchemaCreate)
 @marshal_with(UserSchemaOutput)
 def create_user(**kwargs) -> (User, int):
@@ -20,13 +20,13 @@ def create_user(**kwargs) -> (User, int):
     return crud.create_user(kwargs), 200
 
 
-@users.route("/users", methods=["GET"])
+@users.get("/users")
 @marshal_with(UserSchemaOutput(many=True))
 def get_user_list() -> (list[User], int):
     return crud.get_user_list(), 200
 
 
-@users.route("/users/<int:user_id>", methods=["GET"])
+@users.get("/users/<int:user_id>")
 @marshal_with(UserSchemaOutput)
 def get_user(user_id: int) -> (User, int):
     user = crud.get_user(user_id)
@@ -36,7 +36,7 @@ def get_user(user_id: int) -> (User, int):
     return user, 200
 
 
-@users.route("/users/<int:user_id>/applications", methods=["GET"])
+@users.get("/users/<int:user_id>/applications")
 @marshal_with(ApplicationSchemaOutput(many=True))
 def get_user_applications(user_id: int) -> (list[Application], int):
     user = crud.get_user(user_id)
@@ -46,7 +46,7 @@ def get_user_applications(user_id: int) -> (list[Application], int):
     return [x for x in user.applications], 200
 
 
-@users.route("/users/<int:user_id>/pending", methods=["GET"])
+@users.get("/users/<int:user_id>/pending")
 @marshal_with(ApplicationSchemaOutput)
 def get_user_pending(user_id: int) -> (Application, int):
     user = crud.get_user(user_id)
@@ -60,7 +60,7 @@ def get_user_pending(user_id: int) -> (Application, int):
     return applications[-1], 200
 
 
-@users.route("/users/<int:user_id>", methods=["PUT"])
+@users.put("/users/<int:user_id>")
 @use_kwargs(UserSchema)
 @marshal_with(UserSchemaOutput)
 def update_user(user_id: int, password: str, **kwargs) -> (User, int):
