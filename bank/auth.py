@@ -9,7 +9,7 @@ def hash_password(password: str) -> bytes:
     return hashed_password
 
 
-def check_password(input_password: str, hashed_password: bytes):
+def check_password(input_password: str, hashed_password: bytes) -> bool:
     input_password = input_password.encode('utf-8')
     return hashpw(input_password, hashed_password) == hashed_password
 

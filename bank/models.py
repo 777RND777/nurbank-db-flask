@@ -17,7 +17,7 @@ class Application(db.Model):
 
     # id check
     @classmethod
-    def get(cls, application_id: int):
+    def get(cls, application_id: int) -> 'Application':
         application = cls.query.filter(cls.id_ == application_id).first()
         return application
 
@@ -38,6 +38,6 @@ class User(db.Model):
 
     # id check
     @classmethod
-    def get(cls, user_id: int):
+    def get(cls, user_id: int) -> 'User':
         user = cls.query.filter(cls.id_ == user_id).first()
         return user

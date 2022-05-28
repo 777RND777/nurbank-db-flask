@@ -6,7 +6,7 @@ db = SQLAlchemy()
 docs = FlaskApiSpec()
 
 
-def create_app():
+def create_app() -> Flask:
     app = Flask(__name__)
     app.config.from_pyfile('config.py')
 
