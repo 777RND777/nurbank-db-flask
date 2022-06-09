@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+DEBUG = os.getenv('DEBUG', "true").strip().lower() == "true"
 SECRET_KEY = os.getenv('SECRET_KEY', '')
 
 SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URL', 'sqlite:///db.sqlite')
