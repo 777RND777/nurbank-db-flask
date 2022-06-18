@@ -30,8 +30,8 @@ def get_user_list() -> (list[User], int):
 @marshal_with(UserSchemaOutput)
 def get_user(user_id: int) -> (User, int):
     user = crud.get_user(user_id)
-    if not user:
-        return None, 404
+    # if not user:
+    #     return None, 404
 
     return user, 200
 
