@@ -1,15 +1,31 @@
-FROM python:3.9
+FROM python:3.9 as base
 
-ENV DEBUG="true"
-ENV SECRET_KEY=""
-ENV SQLALCHEMY_DATABASE_URI=""
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONFAULTHANDLER 1
 
-RUN mkdir -p /nurbank-db-flask
-WORKDIR /nurbank-db-flask
 
-COPY . /nurbank-db-flask/
+FROM base AS python-deps
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install pipenv
+RUN apt-get update && apt-get install -y --no-install-recommends gcc
+
+COPY Pipfile .
+COPY Pipfile.lock .
+RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy
+
+
+FROM base AS runtime
+
+COPY --from=python-deps /.venv /.venv
+ENV PATH="/.venv/bin:$PATH"
+
+RUN useradd --create-home appuser
+WORKDIR /home/appuser
+USER appuser
+
+COPY . .
 
 EXPOSE 8080
 
